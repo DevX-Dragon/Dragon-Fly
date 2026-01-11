@@ -18,5 +18,10 @@ MCU: STM32F722RET6 (216MHz ARM Cortex-M7)
 
 **Logic Voltage:** 3.3V (via LDO)
 
+## Schematics and PCB
+<img width="700" height="500" alt="Schematics Layout" src="https://github.com/user-attachments/assets/896a5418-3d3e-4299-bd08-b59250e7b800" />
+<img width="300" height="450" alt="PCB Layout" src="https://github.com/user-attachments/assets/7432c427-2b2e-423e-93e3-38333ef0b94a" />
+
+
 ## 🤝 Contributing
 Contributions are welcome! If you find a bug in the design or have a suggestion for firmware implementation, please open an Issue or submit a Pull Request.
