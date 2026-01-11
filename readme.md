@@ -1,6 +1,9 @@
 # Dragon Fly Rocket Controller
 High-Performance STM32F7-based Flight Controller for Rockets & Drones
 
+<img width="480" height="480" alt="Black Render" src="https://github.com/user-attachments/assets/13e4ca18-dbe3-4623-bb4b-8ea2576e86bd" />
+<img width="480" height="480" alt="eye-level" src="https://github.com/user-attachments/assets/c0f371a8-73a0-485c-9b11-516dc6f7455d" />
+
 ## Project Overview
 This project is a custom, lightweight flight controller designed around the STM32F722RET6 MCU. It features advanced power regulation for wide-voltage battery inputs and high-precision sensing for rocket/drone telemetry.
 
