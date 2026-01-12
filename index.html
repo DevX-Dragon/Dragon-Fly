@@ -18,170 +18,209 @@
             background-color: var(--bg);
             color: white;
             overflow-x: hidden;
-            line-height: 1.6;
         }
 
-        /* Hero Section */
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 90%;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo { font-weight: 900; font-style: italic; font-size: 1.5rem; letter-spacing: 2px; }
+
+        /* --- HERO SECTION --- */
         .hero {
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding-top: 50px;
             background: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
-            padding: 20px;
         }
 
-        .title {
-            font-size: clamp(3rem, 10vw, 5rem);
-            font-weight: 900;
-            margin: 0;
-            background: linear-gradient(45deg, #fff 30%, #444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-        }
+        .title-container { text-align: center; z-index: 2; pointer-events: none; }
+        .hero-title { font-size: 8vw; margin: 0; font-weight: 900; line-height: 0.8; text-transform: uppercase; letter-spacing: -2px; }
+        .hero-subtitle { color: var(--primary); letter-spacing: 5px; font-weight: 300; margin-top: 10px; opacity: 0.8; }
 
-        /* Interactive Display */
-        .display-container {
+        /* --- THE DISPLAY (BIGGER) --- */
+        .display-wrap {
             position: relative;
-            width: 100%;
-            max-width: 700px;
-            height: 450px;
-            margin: 20px auto;
+            width: 85vw; 
+            height: 65vh;
+            margin-top: -40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .drone-img {
             position: absolute;
-            top: 0; left: 0;
             width: 100%;
             height: 100%;
             object-fit: contain;
             opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            animation: float 6s ease-in-out infinite;
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8));
+            animation: hoverFloat 6s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes hoverFloat {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-25px); }
         }
 
-        /* Toggle Logic */
-        input[type="radio"] { display: none; }
-        
-        #black:checked ~ .hero .display-container .img-black,
-        #green:checked ~ .hero .display-container .img-green,
-        #blue:checked ~ .hero .display-container .img-blue,
-        #red:checked ~ .hero .display-container .img-red,
-        #yellow:checked ~ .hero .display-container .img-yellow {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Color Controls */
-        .controls {
-            display: flex;
-            gap: 15px;
-            padding: 15px 25px;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            margin-top: 20px;
-        }
-
+        /* --- HOVER LOGIC --- */
+        .controls { display: flex; gap: 20px; z-index: 10; margin-top: 20px; }
         .swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.3s;
+            width: 45px; height: 45px; border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer; transition: 0.3s;
         }
 
-        .swatch:hover { transform: scale(1.2); }
+        /* Default visible image (Black) */
+        .img-black { opacity: 1; transform: scale(1); }
+
+        /* Hover states using general sibling combinator */
+        .swatch-black:hover ~ .display-wrap .img-black { opacity: 1; transform: scale(1); }
+        .swatch-green:hover ~ .display-wrap .img-green { opacity: 1; transform: scale(1); }
+        .swatch-blue:hover ~ .display-wrap .img-blue { opacity: 1; transform: scale(1); }
+        .swatch-red:hover ~ .display-wrap .img-red { opacity: 1; transform: scale(1); }
+        .swatch-yellow:hover ~ .display-wrap .img-yellow { opacity: 1; transform: scale(1); }
+
+        /* Hide default image when hovering any other swatch */
+        .controls:has(.swatch:not(.swatch-black):hover) ~ .display-wrap .img-black { opacity: 0; }
+
         .swatch-black { background: #222; }
         .swatch-green { background: #4CAF50; }
         .swatch-blue { background: #2196F3; }
         .swatch-red { background: #f44336; }
         .swatch-yellow { background: #FFEB3B; }
 
-        input:checked + label {
-            border-color: white;
-            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        /* --- SECTIONS --- */
+        .section-title { padding-left: 5%; margin-top: 80px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 5%;
         }
 
-        /* Tech Specs Table */
-        .specs-section {
-            padding: 100px 5%;
-            max-width: 900px;
-            margin: 0 auto;
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 20px;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
         }
+        .card:hover { border-color: var(--primary); background: rgba(0,255,136,0.05); transform: translateY(-5px); }
+        .card h3 { margin-top: 0; color: #fff; }
 
+        /* --- SPECS TABLE --- */
         table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--glass);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border);
+            margin-top: 10px;
         }
+        td { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        td:first-child { color: var(--primary); font-weight: bold; width: 35%; }
 
-        td {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        td:first-child {
-            font-weight: bold;
-            color: var(--primary);
-            width: 30%;
-        }
-
+        .roadmap-item { border-left: 2px solid var(--primary); padding-left: 20px; margin-bottom: 30px; }
     </style>
 </head>
 <body>
 
-    <input type="radio" name="fc-color" id="black" checked>
-    <input type="radio" name="fc-color" id="green">
-    <input type="radio" name="fc-color" id="blue">
-    <input type="radio" name="fc-color" id="red">
-    <input type="radio" name="fc-color" id="yellow">
+    <nav>
+        <div class="logo">DRAGON-FLY</div>
+        <div class="status" style="font-size: 0.8rem; letter-spacing: 1px;">🟢 SYSTEM STABLE</div>
+    </nav>
 
     <section class="hero">
-        <h1 class="title">Dragon-Fly</h1>
-        <p style="color: #888; letter-spacing: 2px;">STM32F7 POWERED DYNAMICS</p>
-
-        <div class="display-container">
-            <img src="Renders in Ki/Flight_Controller_Black.png" class="drone-img img-black">
-            <img src="Renders in Ki/Flight_Controller_green.png" class="drone-img img-green">
-            <img src="Renders in Ki/Flight_Controller_Blue.png" class="drone-img img-blue">
-            <img src="Renders in Ki/Flight_Controller_red.png" class="drone-img img-red">
-            <img src="Renders in Ki/Flight_Controller_Yellow.png" class="drone-img img-yellow">
+        <div class="title-container">
+            <h1 class="hero-title">Dragon-Fly</h1>
+            <p class="hero-subtitle">OPEN-SOURCE ROCKET CONTROLLER</p>
         </div>
 
         <div class="controls">
-            <label for="black" class="swatch swatch-black"></label>
-            <label for="green" class="swatch swatch-green"></label>
-            <label for="blue" class="swatch swatch-blue"></label>
-            <label for="red" class="swatch swatch-red"></label>
-            <label for="yellow" class="swatch swatch-yellow"></label>
+            <div class="swatch swatch-black"></div>
+            <div class="swatch swatch-green"></div>
+            <div class="swatch swatch-blue"></div>
+            <div class="swatch swatch-red"></div>
+            <div class="swatch swatch-yellow"></div>
+
+            <div class="display-wrap">
+                <img src="Renders in Ki/Flight_Controller_Black.png" class="drone-img img-black">
+                <img src="Renders in Ki/Flight_Controller_green.png" class="drone-img img-green">
+                <img src="Renders in Ki/Flight_Controller_Blue.png" class="drone-img img-blue">
+                <img src="Renders in Ki/Flight_Controller_red.png" class="drone-img img-red">
+                <img src="Renders in Ki/Flight_Controller_Yellow.png" class="drone-img img-yellow">
+            </div>
         </div>
     </section>
 
-    <section class="specs-section">
-        <h2 style="text-align: center; margin-bottom: 40px;">Technical Architecture</h2>
-        <table>
-            <tr><td>MCU</td><td>STM32F722RET6 (216MHz ARM Cortex-M7)</td></tr>
-            <tr><td>IMU</td><td>ICM-42688-P (High-Precision 6-Axis)</td></tr>
-            <tr><td>Barometer</td><td>BMP580 (High-Resolution Altitude)</td></tr>
-            <tr><td>Power</td><td>TPS63070 Buck-Boost (1S-4S Input)</td></tr>
-            <tr><td>Logic</td><td>3.3V LDO / 5V 2A Switching Regulator</td></tr>
-        </table>
+    <h2 class="section-title">▶ Technical Specification</h2>
+    <section class="grid">
+        <div class="card" style="grid-column: span 2;">
+            <table>
+                <tr><td>MCU</td><td>STM32F722RET6 (216MHz ARM Cortex-M7)</td></tr>
+                <tr><td>IMU</td><td>ICM-42688-P (High-Precision 6-Axis)</td></tr>
+                <tr><td>Barometer</td><td>BMP580 (High-Resolution Altitude)</td></tr>
+                <tr><td>Power</td><td>TPS63070 Buck-Boost (1S-4S Input)</td></tr>
+                <tr><td>Logic</td><td>3.3V LDO / 5V 2A Switching Regulator</td></tr>
+            </table>
+        </div>
+        <div class="card">
+            <h3>F7 Power</h3>
+            <p>Leveraging 216MHz of raw processing power to eliminate loop latency and handle complex sensor fusion in real-time.</p>
+        </div>
     </section>
+
+    <h2 class="section-title">▶ Firmware Philosophy</h2>
+    <section class="grid">
+        <div class="card">
+            <h3>Deterministic Loop</h3>
+            <p>A strictly timed 1kHz execution window ensures PID derivatives remain accurate regardless of telemetry load.</p>
+        </div>
+        <div class="card">
+            <h3>Safety First</h3>
+            <p>Integrated failsafe arrays monitor orientation and signal health, providing sub-millisecond motor cut-off in emergencies.</p>
+        </div>
+        <div class="card">
+            <h3>Sensor Fusion</h3>
+            <p>Advanced filtering combines the low-latency response of the ICM-42688 with the long-term stability of the BMP580.</p>
+        </div>
+    </section>
+
+    <h2 class="section-title">▶ Project Roadmap</h2>
+    <section class="grid">
+        <div class="card">
+            <div class="roadmap-item">
+                <h4>Phase 1: Hardware Alpha</h4>
+                <p>Completion of the high-speed PCB layout and initial power delivery testing.</p>
+            </div>
+            <div class="roadmap-item">
+                <h4>Phase 2: Driver Integration</h4>
+                <p>Developing low-level SPI drivers for the ICM-42688-P and I2C protocols for altitude data.</p>
+            </div>
+            <div class="roadmap-item" style="border-color: #444;">
+                <h4>Phase 3: PID Tuning</h4>
+                <p>Testing flight dynamics and refining autonomous stabilization algorithms.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 100px 20px; opacity: 0.3; font-size: 0.7rem; letter-spacing: 2px;">
+        ENGINEERED FOR STABILITY. DESIGNED FOR THE FUTURE.
+    </footer>
 
 </body>
 </html>
