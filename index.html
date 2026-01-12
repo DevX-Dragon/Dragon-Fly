@@ -3,90 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon-Fly | Next-Gen Flight Controller</title>
+    <title>Dragon-Fly | High-Performance FC</title>
     <style>
         :root {
-            --primary: #ff4757;
-            --bg: #0a0a0c;
-            --glass: rgba(255, 255, 255, 0.05);
+            --primary: #00ff88;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         body {
             margin: 0;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg);
             color: white;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         /* Hero Section */
         .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at center, #1e272e 0%, #0a0a0c 100%);
+            background: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
+            padding: 20px;
         }
 
         .title {
-            font-size: 4rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-            margin-bottom: 0;
-            background: linear-gradient(to right, #fff, #666);
+            font-size: clamp(3rem, 10vw, 5rem);
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(45deg, #fff 30%, #444);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -2px;
         }
 
-        /* The Interactive Drone Display */
+        /* Interactive Display */
         .display-container {
             position: relative;
-            width: 500px;
-            height: 400px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
+            max-width: 700px;
+            height: 450px;
+            margin: 20px auto;
         }
 
         .drone-img {
             position: absolute;
+            top: 0; left: 0;
             width: 100%;
-            height: auto;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5));
+            height: 100%;
+            object-fit: contain;
             opacity: 0;
-            transform: scale(0.9) translateY(20px);
-            animation: float 4s ease-in-out infinite;
+            transform: scale(0.8);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: float 6s ease-in-out infinite;
         }
 
-        /* Animation for "Flying" effect */
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        /* Control which drone shows based on checked radio */
-        #red:checked ~ .display-container .img-red,
-        #blue:checked ~ .display-container .img-blue,
-        #gold:checked ~ .display-container .img-gold {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        /* Hidden Radio Buttons */
+        /* Toggle Logic */
         input[type="radio"] { display: none; }
+        
+        #black:checked ~ .hero .display-container .img-black,
+        #green:checked ~ .hero .display-container .img-green,
+        #blue:checked ~ .hero .display-container .img-blue,
+        #red:checked ~ .hero .display-container .img-red,
+        #yellow:checked ~ .hero .display-container .img-yellow {
+            opacity: 1;
+            transform: scale(1);
+        }
 
-        /* Color Swatches */
+        /* Color Controls */
         .controls {
             display: flex;
-            gap: 20px;
-            margin-top: 30px;
+            gap: 15px;
+            padding: 15px 25px;
             background: var(--glass);
-            padding: 15px 30px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            margin-top: 20px;
         }
 
         .swatch {
@@ -99,72 +103,84 @@
         }
 
         .swatch:hover { transform: scale(1.2); }
-        .swatch-red { background: #ff4757; }
-        .swatch-blue { background: #2e86de; }
-        .swatch-gold { background: #f1c40f; }
+        .swatch-black { background: #222; }
+        .swatch-green { background: #4CAF50; }
+        .swatch-blue { background: #2196F3; }
+        .swatch-red { background: #f44336; }
+        .swatch-yellow { background: #FFEB3B; }
 
-        #red:checked ~ .controls .swatch-red { border-color: white; }
-        #blue:checked ~ .controls .swatch-blue { border-color: white; }
-        #gold:checked ~ .controls .swatch-gold { border-color: white; }
+        input:checked + label {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
 
-        /* Feature Cards */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 50px;
-            max-width: 1200px;
+        /* Tech Specs Table */
+        .specs-section {
+            padding: 100px 5%;
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        .card {
+        table {
+            width: 100%;
+            border-collapse: collapse;
             background: var(--glass);
-            padding: 30px;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
-        .card h3 { color: var(--primary); margin-top: 0; }
+        td {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td:first-child {
+            font-weight: bold;
+            color: var(--primary);
+            width: 30%;
+        }
 
     </style>
 </head>
 <body>
 
-    <input type="radio" name="color" id="red" checked>
-    <input type="radio" name="color" id="blue">
-    <input type="radio" name="color" id="gold">
+    <input type="radio" name="fc-color" id="black" checked>
+    <input type="radio" name="fc-color" id="green">
+    <input type="radio" name="fc-color" id="blue">
+    <input type="radio" name="fc-color" id="red">
+    <input type="radio" name="fc-color" id="yellow">
 
     <section class="hero">
-        <h1 class="title">DRAGON-FLY</h1>
-        <p style="color: #888;">High-Performance Flight Controller | STM32F722 Powered</p>
+        <h1 class="title">Dragon-Fly</h1>
+        <p style="color: #888; letter-spacing: 2px;">STM32F7 POWERED DYNAMICS</p>
 
         <div class="display-container">
-            <img src="https://via.placeholder.com/500x400/ff4757/ffffff?text=DragonFly+Red" class="drone-img img-red">
-            <img src="https://via.placeholder.com/500x400/2e86de/ffffff?text=DragonFly+Blue" class="drone-img img-blue">
-            <img src="https://via.placeholder.com/500x400/f1c40f/ffffff?text=DragonFly+Gold" class="drone-img img-gold">
+            <img src="Flight Controller Black.png" class="drone-img img-black">
+            <img src="Flight Controller green.png" class="drone-img img-green">
+            <img src="Flight Controller Blue.png" class="drone-img img-blue">
+            <img src="Flight Controller red.png" class="drone-img img-red">
+            <img src="Flight Controller Yellow.png" class="drone-img img-yellow">
         </div>
 
         <div class="controls">
-            <label for="red" class="swatch swatch-red"></label>
+            <label for="black" class="swatch swatch-black"></label>
+            <label for="green" class="swatch swatch-green"></label>
             <label for="blue" class="swatch swatch-blue"></label>
-            <label for="gold" class="swatch swatch-gold"></label>
+            <label for="red" class="swatch swatch-red"></label>
+            <label for="yellow" class="swatch swatch-yellow"></label>
         </div>
     </section>
 
-    <section class="features">
-        <div class="card">
-            <h3>216MHz Processing</h3>
-            <p>Driven by the STM32F722RET6 for ultra-low latency PID loops and complex flight maneuvers.</p>
-        </div>
-        <div class="card">
-            <h3>IMU Precision</h3>
-            <p>Integrated TDK ICM-42688-P with anti-vibration mounting logic for clinical stabilization.</p>
-        </div>
-        <div class="card">
-            <h3>Pure Power</h3>
-            <p>Onboard TPS63070 Buck-Boost regulation supports up to 4S input with clean 5V/2A output.</p>
-        </div>
+    <section class="specs-section">
+        <h2 style="text-align: center; margin-bottom: 40px;">Technical Architecture</h2>
+        <table>
+            <tr><td>MCU</td><td>STM32F722RET6 (216MHz ARM Cortex-M7)</td></tr>
+            <tr><td>IMU</td><td>ICM-42688-P (High-Precision 6-Axis)</td></tr>
+            <tr><td>Barometer</td><td>BMP580 (High-Resolution Altitude)</td></tr>
+            <tr><td>Power</td><td>TPS63070 Buck-Boost (1S-4S Input)</td></tr>
+            <tr><td>Logic</td><td>3.3V LDO / 5V 2A Switching Regulator</td></tr>
+        </table>
     </section>
 
 </body>
