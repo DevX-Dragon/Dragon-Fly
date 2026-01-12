@@ -3,212 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon-Fly | Technical Review</title>
+    <title>Dragon-Fly | Next-Gen Flight Controller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00ff88;
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg-dark: #0a0a0a;
+            --accent-gold: #c5a059;
+            --text-main: #ffffff;
+            --text-dim: #888888;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            margin: 0;
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: white;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            line-height: 1.6;
         }
 
-        /* --- NAVIGATION --- */
-        nav {
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo { font-weight: 900; font-style: italic; font-size: 1.2rem; letter-spacing: 2px; }
-
-        /* --- HERO SECTION --- */
+        /* Hero Section */
         .hero {
-            padding: 60px 20px;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            padding: 20px;
             text-align: center;
-            background: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
         }
 
-        .hero-title { font-size: 4rem; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
-        .hero-subtitle { color: var(--primary); letter-spacing: 3px; font-size: 0.9rem; margin-top: 5px; opacity: 0.8; }
+        .brand-tag {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
 
-        /* --- THE DISPLAY (DEFAULT SIZE) --- */
-        .display-wrap {
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 50px;
+            background: linear-gradient(180deg, #fff 0%, #444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Render Display Area */
+        .display-container {
             position: relative;
             width: 100%;
-            max-width: 500px; /* Reset to standard default size */
-            height: 400px;
-            margin: 20px auto;
+            max-width: 600px; /* Scaling up the 480px image */
+            aspect-ratio: 1/1;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
 
-        .drone-img {
-            position: absolute;
+        .main-render {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.4s ease-in-out;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
-            animation: hoverFloat 5s ease-in-out infinite;
+            height: auto;
+            image-rendering: auto; /* Keeps the render smooth */
+            transition: opacity 0.3s ease-in-out;
+            filter: drop-shadow(0 0 50px rgba(255,255,255,0.05));
         }
 
-        @keyframes hoverFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* --- HOVER LOGIC --- */
-        .controls { display: flex; gap: 15px; z-index: 10; margin-bottom: 20px; }
-        .swatch {
-            width: 32px; height: 32px; border-radius: 50%;
-            border: 2px solid var(--border);
-            cursor: pointer; transition: 0.2s;
-        }
-
-        /* Default visible image (Black) */
-        .img-black { opacity: 1; transform: scale(1); }
-
-        /* Hover states */
-        .swatch-black:hover ~ .display-wrap .img-black { opacity: 1; transform: scale(1); }
-        .swatch-green:hover ~ .display-wrap .img-green { opacity: 1; transform: scale(1); }
-        .swatch-blue:hover ~ .display-wrap .img-blue { opacity: 1; transform: scale(1); }
-        .swatch-red:hover ~ .display-wrap .img-red { opacity: 1; transform: scale(1); }
-        .swatch-yellow:hover ~ .display-wrap .img-yellow { opacity: 1; transform: scale(1); }
-
-        /* Hide default when hovering others */
-        .controls:has(.swatch:not(.swatch-black):hover) ~ .display-wrap .img-black { opacity: 0; }
-
-        .swatch-black { background: #222; }
-        .swatch-green { background: #4CAF50; }
-        .swatch-blue { background: #2196F3; }
-        .swatch-red { background: #f44336; }
-        .swatch-yellow { background: #FFEB3B; }
-
-        /* --- GRID & CARDS --- */
-        .section-title { padding: 0 5%; margin-top: 60px; color: var(--primary); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        /* Color Switcher Bar */
+        .controls {
+            margin-top: 40px;
+            display: flex;
             gap: 20px;
-            padding: 20px 5%;
+            background: rgba(255,255,255,0.05);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 15px;
-            transition: 0.3s;
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
-        .card:hover { border-color: var(--primary); background: rgba(0,255,136,0.05); }
 
-        /* --- DOWNLOAD BUTTONS --- */
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: var(--primary);
-            color: black;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: 0.3s;
+        .color-btn:hover, .color-btn.active {
+            transform: scale(1.3);
+            border-color: white;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,136,0.3); }
 
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        td:first-child { color: var(--primary); width: 40%; }
+        /* Color variants */
+        .black  { background-color: #1a1a1a; }
+        .green  { background-color: #2d5a27; }
+        .blue   { background-color: #273e5a; }
+        .red    { background-color: #7a2121; }
+        .yellow { background-color: #a38d1e; }
+
+        /* Specs Section */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 90%;
+            margin: 100px auto;
+            padding-bottom: 100px;
+        }
+
+        .spec-card {
+            border-left: 1px solid #333;
+            padding-left: 20px;
+        }
+
+        .spec-card h3 {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .spec-card p {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .controls { gap: 15px; padding: 10px 20px; }
+            .color-btn { width: 25px; height: 25px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">DRAGON-FLY</div>
-        <div style="font-size: 0.7rem; opacity: 0.6;">v1.0-STABLE</div>
-    </nav>
-
     <section class="hero">
-        <h1 class="hero-title">Dragon-Fly</h1>
-        <p class="hero-subtitle">NEXT-GEN ROCKET FLIGHT CONTROLLER</p>
+        <p class="brand-tag">V1.0-STABLE</p>
+        <h1>Dragon-Fly</h1>
 
-        <div class="controls">
-            <div class="swatch swatch-black"></div>
-            <div class="swatch swatch-green"></div>
-            <div class="swatch swatch-blue"></div>
-            <div class="swatch swatch-red"></div>
-            <div class="swatch swatch-yellow"></div>
+        <div class="display-container">
+            <img id="renderTarget" class="main-render" src="Renders in Ki/Flight_Controller_Black.png" alt="Dragon-Fly FC">
+        </div>
 
-            <div class="display-wrap">
-                <img src="Renders in Ki/Flight_Controller_Black.png" class="drone-img img-black">
-                <img src="Renders in Ki/Flight_Controller_green.png" class="drone-img img-green">
-                <img src="Renders in Ki/Flight_Controller_Blue.png" class="drone-img img-blue">
-                <img src="Renders in Ki/Flight_Controller_red.png" class="drone-img img-red">
-                <img src="Renders in Ki/Flight_Controller_Yellow.png" class="drone-img img-yellow">
-            </div>
+        <div class="controls" id="colorControls">
+            <div class="color-btn black active" data-img="Renders in Ki/Flight_Controller_Black.png"></div>
+            <div class="color-btn green" data-img="Renders in Ki/Flight_Controller_green.png"></div>
+            <div class="color-btn blue" data-img="Renders in Ki/Flight_Controller_Blue.png"></div>
+            <div class="color-btn red" data-img="Renders in Ki/Flight_Controller_red.png"></div>
+            <div class="color-btn yellow" data-img="Renders in Ki/Flight_Controller_Yellow.png"></div>
         </div>
     </section>
 
-    <h2 class="section-title">▶ Hardware Specifications</h2>
-    <section class="grid">
-        <div class="card" style="grid-column: span 2;">
-            <table>
-                <tr><td>Processor</td><td>STM32F722RET6 @ 216MHz</td></tr>
-                <tr><td>Inertial Sensing</td><td>ICM-42688-P 6-Axis SPI</td></tr>
-                <tr><td>Altimeter</td><td>BMP580 I2C Pressure Sensor</td></tr>
-                <tr><td>Voltage Input</td><td>1S - 4S LiPo Support</td></tr>
-                <tr><td>Regulator</td><td>TPS63070 Buck-Boost 5V/2A</td></tr>
-            </table>
+    <section class="specs-grid">
+        <div class="spec-card">
+            <h3>Processor</h3>
+            <p>STM32F722RET6 @ 216MHz</p>
         </div>
-        <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-            <h3>Documentation</h3>
-            <p style="font-size: 0.85rem; opacity: 0.7;">Download the full hardware package including Schematics and BOM.</p>
-            <a href="#" class="btn">DOWNLOAD PDF</a>
+        <div class="spec-card">
+            <h3>Inertial Sensing</h3>
+            <p>ICM-42688-P 6-Axis</p>
         </div>
-    </section>
-
-    <h2 class="section-title">▶ Development Roadmap</h2>
-    <section class="grid">
-        <div class="card">
-            <h4 style="color:var(--primary); margin-top:0;">Q1 2026</h4>
-            <p>Hardware validation and initial driver development for TDK sensors.</p>
+        <div class="spec-card">
+            <h3>Altimeter</h3>
+            <p>BMP580 High Precision</p>
         </div>
-        <div class="card">
-            <h4 style="color:var(--primary); margin-top:0;">Q2 2026</h4>
-            <p>Integration of Blackbox logging via SPI Flash for telemetry analysis.</p>
-        </div>
-        <div class="card">
-            <h4 style="color:var(--primary); margin-top:0;">Q3 2026</h4>
-            <p>Release of autonomous stabilization algorithms for rocket recovery.</p>
+        <div class="spec-card">
+            <h3>Input</h3>
+            <p>1S - 4S LiPo Support</p>
         </div>
     </section>
 
-    <footer style="text-align: center; padding: 60px 20px; opacity: 0.4; font-size: 0.7rem; letter-spacing: 1px;">
-        © 2026 Fully owned by Abbadh | DevX_Dragon
-    </footer>
+    <script>
+        const renderTarget = document.getElementById('renderTarget');
+        const buttons = document.querySelectorAll('.color-btn');
 
+        function updateColor(e) {
+            const newSrc = e.target.getAttribute('data-img');
+            
+            // Subtle fade transition
+            renderTarget.style.opacity = 0;
+            
+            setTimeout(() => {
+                renderTarget.src = newSrc;
+                renderTarget.style.opacity = 1;
+            }, 150);
+
+            // Update active state
+            buttons.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+
+        buttons.forEach(button => {
+            // Hover for PC
+            button.addEventListener('mouseenter', updateColor);
+            
+            // Click for Mobile/PC
+            button.addEventListener('click', updateColor);
+        });
+    </script>
 </body>
 </html>
