@@ -3,203 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon-Fly | Next-Gen Flight Controller</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <title>Dragon-Fly | Flight Controller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0a0a;
-            --accent-gold: #c5a059;
-            --text-main: #ffffff;
-            --text-dim: #888888;
+            --bg: #0d0d0d;
+            --card-bg: #161616;
+            --accent: #ff4d4d; /* Dynamic based on board? Set to red for now */
+            --text: #ffffff;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
+            margin: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            text-align: center;
+            min-height: 100vh;
         }
 
-        .brand-tag {
+        /* Main Container: Scales everything to fit the screen */
+        .page-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            padding: 40px 0;
+        }
+
+        /* Left Side: Text Info */
+        .info-panel {
+            text-align: left;
+        }
+
+        .brand {
             font-family: 'JetBrains Mono', monospace;
-            color: var(--accent-gold);
-            letter-spacing: 4px;
             font-size: 0.9rem;
+            color: #666;
             margin-bottom: 10px;
         }
 
         h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 700;
-            margin-bottom: 50px;
-            background: linear-gradient(180deg, #fff 0%, #444 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            line-height: 1;
         }
 
-        /* Render Display Area */
-        .display-container {
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .spec-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            border-top: 1px solid #333;
+            padding-top: 30px;
+        }
+
+        .spec-item span {
+            display: block;
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* Right Side: Render Display */
+        .visual-panel {
             position: relative;
-            width: 100%;
-            max-width: 600px; /* Scaling up the 480px image */
-            aspect-ratio: 1/1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
-        .main-render {
+        .render-container {
+            width: 100%;
+            max-width: 500px; /* Big but controlled */
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .render-container img {
             width: 100%;
             height: auto;
-            image-rendering: auto; /* Keeps the render smooth */
-            transition: opacity 0.3s ease-in-out;
-            filter: drop-shadow(0 0 50px rgba(255,255,255,0.05));
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5));
         }
 
-        /* Color Switcher Bar */
-        .controls {
-            margin-top: 40px;
+        /* Color Buttons at the Bottom */
+        .color-picker {
+            margin-top: 30px;
             display: flex;
-            gap: 20px;
-            background: rgba(255,255,255,0.05);
-            padding: 15px 30px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
+            gap: 15px;
+            background: rgba(255,255,255,0.03);
+            padding: 12px 20px;
+            border-radius: 100px;
+            border: 1px solid #222;
         }
 
-        .color-btn {
-            width: 30px;
-            height: 30px;
+        .dot {
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            border: 2px solid transparent;
             cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            border: 2px solid transparent;
+            transition: 0.3s;
         }
 
-        .color-btn:hover, .color-btn.active {
+        .dot:hover, .dot.active {
             transform: scale(1.3);
             border-color: white;
         }
 
-        /* Color variants */
-        .black  { background-color: #1a1a1a; }
-        .green  { background-color: #2d5a27; }
-        .blue   { background-color: #273e5a; }
-        .red    { background-color: #7a2121; }
-        .yellow { background-color: #a38d1e; }
+        /* Colors */
+        .c-black { background: #1a1a1a; }
+        .c-green { background: #2e5a27; }
+        .c-blue  { background: #27415a; }
+        .c-red   { background: #8a1f1f; }
+        .c-yellow{ background: #b19420; }
 
-        /* Specs Section */
-        .specs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 1000px;
-            width: 90%;
-            margin: 100px auto;
-            padding-bottom: 100px;
-        }
-
-        .spec-card {
-            border-left: 1px solid #333;
-            padding-left: 20px;
-        }
-
-        .spec-card h3 {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .spec-card p {
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-            .controls { gap: 15px; padding: 10px 20px; }
-            .color-btn { width: 25px; height: 25px; }
+        /* Mobile Adjustments */
+        @media (max-width: 900px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+                text-align: center;
+                margin-top: 50px;
+            }
+            .info-panel { order: 2; }
+            .visual-panel { order: 1; }
+            .spec-list { text-align: left; }
+            h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <section class="hero">
-        <p class="brand-tag">V1.0-STABLE</p>
-        <h1>Dragon-Fly</h1>
-
-        <div class="display-container">
-            <img id="renderTarget" class="main-render" src="Renders in Ki/Flight_Controller_Black.png" alt="Dragon-Fly FC">
+    <div class="page-wrapper">
+        
+        <div class="info-panel">
+            <div class="brand">DEVX-DRAGON // V1.0-STABLE</div>
+            <h1>Dragon-Fly</h1>
+            <p class="subtitle">Next-Gen Rocket Flight Controller</p>
+            
+            <div class="spec-list">
+                <div class="spec-item"><span>Processor</span>STM32F722RET6</div>
+                <div class="spec-item"><span>IMU</span>ICM-42688-P</div>
+                <div class="spec-item"><span>Altimeter</span>BMP580</div>
+                <div class="spec-item"><span>Input</span>1S - 4S LiPo</div>
+            </div>
         </div>
 
-        <div class="controls" id="colorControls">
-            <div class="color-btn black active" data-img="Renders in Ki/Flight_Controller_Black.png"></div>
-            <div class="color-btn green" data-img="Renders in Ki/Flight_Controller_green.png"></div>
-            <div class="color-btn blue" data-img="Renders in Ki/Flight_Controller_Blue.png"></div>
-            <div class="color-btn red" data-img="Renders in Ki/Flight_Controller_red.png"></div>
-            <div class="color-btn yellow" data-img="Renders in Ki/Flight_Controller_Yellow.png"></div>
-        </div>
-    </section>
+        <div class="visual-panel">
+            <div class="render-container" id="boardFrame">
+                <img id="mainRender" src="Renders in Ki/Flight_Controller_Black.png" alt="Dragon-Fly">
+            </div>
 
-    <section class="specs-grid">
-        <div class="spec-card">
-            <h3>Processor</h3>
-            <p>STM32F722RET6 @ 216MHz</p>
+            <div class="color-picker">
+                <div class="dot c-black active" data-img="Renders in Ki/Flight_Controller_Black.png"></div>
+                <div class="dot c-green" data-img="Renders in Ki/Flight_Controller_green.png"></div>
+                <div class="dot c-blue" data-img="Renders in Ki/Flight_Controller_Blue.png"></div>
+                <div class="dot c-red" data-img="Renders in Ki/Flight_Controller_red.png"></div>
+                <div class="dot c-yellow" data-img="Renders in Ki/Flight_Controller_Yellow.png"></div>
+            </div>
         </div>
-        <div class="spec-card">
-            <h3>Inertial Sensing</h3>
-            <p>ICM-42688-P 6-Axis</p>
-        </div>
-        <div class="spec-card">
-            <h3>Altimeter</h3>
-            <p>BMP580 High Precision</p>
-        </div>
-        <div class="spec-card">
-            <h3>Input</h3>
-            <p>1S - 4S LiPo Support</p>
-        </div>
-    </section>
+
+    </div>
 
     <script>
-        const renderTarget = document.getElementById('renderTarget');
-        const buttons = document.querySelectorAll('.color-btn');
+        const img = document.getElementById('mainRender');
+        const frame = document.getElementById('boardFrame');
+        const dots = document.querySelectorAll('.dot');
 
-        function updateColor(e) {
+        function changeColor(e) {
             const newSrc = e.target.getAttribute('data-img');
             
-            // Subtle fade transition
-            renderTarget.style.opacity = 0;
+            // Visual feedback
+            img.style.opacity = '0.4';
+            frame.style.transform = 'scale(0.95)';
             
             setTimeout(() => {
-                renderTarget.src = newSrc;
-                renderTarget.style.opacity = 1;
+                img.src = newSrc;
+                img.style.opacity = '1';
+                frame.style.transform = 'scale(1)';
             }, 150);
 
-            // Update active state
-            buttons.forEach(btn => btn.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
             e.target.classList.add('active');
         }
 
-        buttons.forEach(button => {
-            // Hover for PC
-            button.addEventListener('mouseenter', updateColor);
-            
-            // Click for Mobile/PC
-            button.addEventListener('click', updateColor);
+        dots.forEach(dot => {
+            dot.addEventListener('mouseenter', changeColor); // Hover for PC
+            dot.addEventListener('click', changeColor);      // Click for Mobile
         });
     </script>
 </body>
